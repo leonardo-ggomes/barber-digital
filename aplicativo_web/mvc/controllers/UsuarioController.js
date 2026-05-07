@@ -5,12 +5,28 @@ class UsuarioController
     constructor()
     {
         this.usuarioService = new UsuarioService()
-        this.index = this.index.bind(this);
     }
 
-    async index(req, res){
+    async index(req, res)
+    {
         const usuarios = await this.usuarioService.buscarUsuario(req.params.id)
         res.render("Usuario/UsuarioView", { usuarios})
+    }
+
+    usuarioEditView(req, res)
+    {
+         res.render("Usuario/EditView")
+    }
+
+    async usuarioPostAsync(req,res)
+    {
+        const id = await this.usuarioService.cadastrarUsuario(
+            req.body.username,
+            req.body.email, 
+            req.body.senha
+        )
+
+       res.json({ id: id })
     }
 
 }
