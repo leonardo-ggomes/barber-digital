@@ -22,115 +22,127 @@
             --sidebar-width: 60px;
         }
 
-        /* --- Estilos Anteriores --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: var(--bg-body); color: var(--text-main); font-family: var(--font); display: flex; height: 100vh; overflow: hidden; }
+
+        /* --- Sidebar --- */
         .lg-sidebar { width: var(--sidebar-width); background-color: var(--bg-sidebar); display: flex; flex-direction: column; align-items: center; padding: 20px 0; flex-shrink: 0; }
         .lg-nav-item { color: var(--text-muted); padding: 12px; margin-bottom: 8px; border-radius: var(--border-radius); transition: all 0.2s ease; display: flex; align-items: center; }
         .lg-nav-item:hover, .lg-nav-item.active { background-color: rgba(255, 255, 255, 0.05); color: var(--text-main); }
         .lg-nav-item svg { width: 20px; height: 20px; }
+
+        /* --- Main Container --- */
         .lg-main-container { flex-grow: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; }
+        
         .lg-breadcrumb { display: flex; gap: 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); align-items: center; }
         .lg-breadcrumb span::after { content: '/'; margin-left: 8px; }
         .lg-breadcrumb b { color: var(--text-main); }
-        .lg-header-flex { display: flex; justify-content: space-between; align-items: flex-end; }
-        .lg-display-1 { font-size: 28px; font-weight: 700; }
-        .lg-table-container { background-color: var(--bg-sidebar); border-radius: var(--border-radius); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05); }
-        .lg-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
-        .lg-table thead { background-color: rgba(0, 0, 0, 0.2); }
-        .lg-table th { color: var(--primary); text-transform: uppercase; font-size: 10px; font-weight: 700; padding: 16px; letter-spacing: 0.5px; }
-        .lg-table td { padding: 14px 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.03); color: var(--text-muted); }
-        .lg-table tr:hover td { background-color: rgba(255, 255, 255, 0.02); color: var(--text-main); }
-        .lg-actions { display: flex; gap: 8px; }
-        .lg-btn-icon { background: var(--bg-card); border: 1px solid var(--primary); color: var(--text-muted); padding: 6px; border-radius: var(--border-radius); cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; text-decoration: none; }
-        .lg-btn-icon:hover { border-color: var(--text-main); color: var(--text-main); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1); }
-        .lg-btn-icon.danger:hover { background-color: var(--danger); border-color: var(--danger); }
-        .lg-btn-add { text-decoration: none; background: var(--accent); color: white; padding: 8px 16px; border-radius: var(--border-radius); font-size: 11px; font-weight: 700; text-transform: uppercase; display: flex; align-items: center; gap: 8px; border: none; cursor: pointer; }
 
-        /* --- Modal Design --- */
-        .lg-modal-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(4px);
-            display: none; /* Escondido por padrão */
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .lg-modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .lg-modal {
-            background: var(--bg-sidebar);
-            width: 100%;
-            max-width: 400px;
-            padding: 32px;
-            border-radius: 8px;
+        .lg-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .lg-display-1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+        
+        /* --- Tabela Minimalista --- */
+        .lg-table-wrapper { 
+            background-color: var(--bg-sidebar); 
+            border-radius: 8px; 
             border: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: center;
-            transform: translateY(20px);
-            transition: transform 0.3s ease;
+            /* box-shadow: 0 10px 30px rgba(0,0,0,0.2); Para adicionar sombra na tabela descomente essa linha*/ 
         }
 
-        .lg-modal-overlay.active .lg-modal {
-            transform: translateY(0);
+        .lg-table { width: 100%; border-collapse: collapse; text-align: left; }
+        
+        .lg-table th { 
+            padding: 18px 24px; 
+            font-size: 10px; 
+            text-transform: uppercase; 
+            color: var(--primary); 
+            font-weight: 800; 
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .lg-modal-icon {
-            background: rgba(150, 32, 32, 0.1);
-            color: var(--danger);
-            width: 60px; height: 60px;
-            border-radius: 50%;
+        .lg-table td { 
+            padding: 16px 24px; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02); 
+            vertical-align: middle;
+        }
+
+        .lg-table tr:last-child td { border-bottom: none; }
+
+        /* Estilo da Coluna Usuário (Avatar + Info) */
+        .lg-user-cell { display: flex; align-items: center; gap: 12px; }
+        .lg-avatar { 
+            width: 36px; height: 36px; 
+            background: linear-gradient(45deg, #333, #444); 
+            border-radius: 8px; 
             display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 20px;
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
+        
+        .lg-user-info { display: flex; flex-direction: column; }
+        .lg-user-name { font-size: 14px; font-weight: 600; color: var(--text-main); }
+        .lg-user-id { font-size: 11px; color: var(--primary); font-family: monospace; }
 
-        .lg-modal-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
-        .lg-modal-text { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; line-height: 1.5; }
+        .lg-email-text { font-size: 13px; color: var(--text-muted); }
 
-        .lg-modal-actions {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .lg-btn-modal {
-            padding: 10px 20px;
-            border-radius: var(--border-radius);
-            font-size: 12px;
+        /* Badge Status (Minimalista) */
+        .lg-badge {
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-size: 10px;
             font-weight: 700;
             text-transform: uppercase;
-            cursor: pointer;
-            border: none;
-            transition: 0.2s;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .lg-btn-cancel { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--primary); }
-        .lg-btn-confirm { background: var(--danger); color: white; }
-        .lg-btn-modal:hover { filter: brightness(1.2); }
+        /* Ações */
+        .lg-actions { display: flex; gap: 6px; justify-content: flex-end; }
+        .lg-btn-icon { 
+            width: 32px; height: 32px;
+            background: transparent; 
+            border: 1px solid rgba(255, 255, 255, 0.05); 
+            color: var(--text-muted); 
+            border-radius: 6px; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            display: flex; align-items: center; justify-content: center; 
+            text-decoration: none; 
+        }
+        .lg-btn-icon:hover { background: var(--bg-card); color: var(--text-main); border-color: var(--primary); }
+        .lg-btn-icon.danger-hover:hover { background: rgba(150, 32, 32, 0.2); color: #ff5f5f; border-color: var(--danger); }
+        .lg-btn-icon svg { width: 14px; height: 14px; }
 
+        /* Botão Adicionar */
+        .lg-btn-add { 
+            text-decoration: none; background: var(--accent); color: white; 
+            padding: 10px 18px; border-radius: 6px; font-size: 11px; 
+            font-weight: 700; text-transform: uppercase; display: flex; 
+            align-items: center; gap: 8px; border: none; cursor: pointer;
+            transition: 0.3s;
+        }
+        .lg-btn-add:hover { filter: brightness(1.2); transform: translateY(-1px); }
+
+        /* Modal (Reutilizado e Ajustado) */
+        .lg-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 1000; opacity: 0; transition: 0.3s; }
+        .lg-modal-overlay.active { display: flex; opacity: 1; }
+        .lg-modal { background: var(--bg-sidebar); width: 90%; max-width: 380px; padding: 32px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); text-align: center; }
+        .lg-btn-confirm { background: var(--danger); color: white; padding: 10px 24px; border-radius: 4px; font-weight: 700; border: none; cursor: pointer; font-size: 12px; text-transform: uppercase; }
+        .lg-btn-cancel { background: transparent; color: var(--text-muted); padding: 10px 24px; border-radius: 4px; font-weight: 700; border: 1px solid var(--primary); cursor: pointer; font-size: 12px; text-transform: uppercase; }
     </style>
 </head>
 
 <body>
     <div class="lg-modal-overlay" id="modalApagar">
         <div class="lg-modal">
-            <div class="lg-modal-icon">
-                <i data-lucide="alert-triangle" style="width: 32px; height: 32px;"></i>
-            </div>
-            <h2 class="lg-modal-title">Excluir Usuário?</h2>
-            <p class="lg-modal-text">Esta ação não pode ser desfeita. O usuário será removido permanentemente do sistema.</p>
-            
+            <div style="color: var(--danger); margin-bottom: 16px;"><i data-lucide="alert-circle" style="width: 48px; height: 48px;"></i></div>
+            <h2 class="lg-modal-title">Confirmar exclusão?</h2>
+            <p class="lg-modal-text">O usuário selecionado será removido permanentemente da base de dados.</p>
             <div class="lg-modal-actions">
-                <button class="lg-btn-modal lg-btn-cancel" onclick="fecharModal()">Cancelar</button>
-                <button class="lg-btn-modal lg-btn-confirm" id="confirmarDelete">Excluir Agora</button>
+                <button class="lg-btn-cancel" onclick="fecharModal()">Voltar</button>
+                <button class="lg-btn-confirm" id="confirmarDelete">Confirmar</button>
             </div>
         </div>
     </div>
@@ -144,47 +156,63 @@
     </nav>
 
     <main class="lg-main-container">
+
         <div class="lg-breadcrumb">
-            <span>Dashboard</span>
-            <b>Usuários Cadastrados</b>
+            <span>Sistema</span>
+            <b>Listar Usuários</b>
         </div>
 
-        <div class="lg-header-flex">
-            <div>
-                <h1 class="lg-display-1">Gerenciamento de Usuários</h1>
-            </div>
+
+        <header class="lg-header-flex">           
+            <h1 class="lg-display-1">Diretório de Membros</h1>
             <a href="/user/create" class="lg-btn-add">
-                <i data-lucide="plus" style="width: 14px;"></i> Novo Usuário
+                <i data-lucide="plus"></i> Novo Usuário
             </a>
-        </div>
+           
+        </header>
+        
 
-        <div class="lg-table-container">
+        <div class="lg-table-wrapper">
             <table class="lg-table">
                 <thead>
                     <tr>
-                        <th>Id</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Ações</th>
+                        <th>Usuário</th>
+                        <th>E-mail Corporativo</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% for(usuario of usuarios) { %> 
-                        <tr>
-                            <td>#<%= usuario.id %></td>
-                            <td style="color: var(--text-main); font-weight: 600;"><%= usuario.nome %></td>
-                            <td><%= usuario.email %></td>
-                            <td>
-                                <div class="lg-actions">
-                                    <a href="/user/edit/<%= usuario.id %>" class="lg-btn-icon" title="Editar">
-                                        <i data-lucide="pencil"></i>
-                                    </a>
-                                    <button onclick="confirmarExclusao('<%= usuario.id %>')" class="lg-btn-icon danger" title="Excluir">
-                                        <i data-lucide="trash-2"></i>
-                                    </button>
+                    <tr>
+                        <td>
+                            <div class="lg-user-cell">
+                                <div class="lg-avatar">
+                                    <i data-lucide="user" style="width: 18px;"></i>
                                 </div>
-                            </td>
-                        </tr>
+                                <div class="lg-user-info">
+                                    <span class="lg-user-name"><%= usuario.nome %></span>
+                                    <span class="lg-user-id">ID_<%= usuario.id %></span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="lg-email-text"><%= usuario.email %></span>
+                        </td>
+                        <td>
+                            <span class="lg-badge">Ativo</span>
+                        </td>
+                        <td>
+                            <div class="lg-actions">
+                                <a href="/user/edit/<%= usuario.id %>" class="lg-btn-icon" title="Editar">
+                                    <i data-lucide="pencil"></i>
+                                </a>
+                                <button onclick="confirmarExclusao('<%= usuario.id %>')" class="lg-btn-icon danger-hover" title="Excluir">
+                                    <i data-lucide="trash-2"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
                     <% } %> 
                 </tbody>
             </table>
@@ -197,40 +225,22 @@
         let usuarioIdParaApagar = null;
         const modal = document.getElementById('modalApagar');
 
-        // Abre o modal e guarda o ID
         function confirmarExclusao(id) {
             usuarioIdParaApagar = id;
             modal.classList.add('active');
         }
 
-        // Fecha o modal
         function fecharModal() {
             modal.classList.remove('active');
             usuarioIdParaApagar = null;
         }
 
-        // Fecha modal se clicar fora dele
-        window.onclick = function(event) {
-            if (event.target == modal) fecharModal();
-        }
-
-        // Executa a exclusão real
         document.getElementById('confirmarDelete').addEventListener('click', async () => {
             if (!usuarioIdParaApagar) return;
-
-            const url = "/user/delete/" + usuarioIdParaApagar;
             try {
-                const response = await fetch(url, { method: 'DELETE' });
-                if(response.ok) {
-                    location.reload();
-                } else {
-                    alert("Erro ao excluir usuário.");
-                    fecharModal();
-                }
-            } catch (err) {
-                console.error("Erro na requisição:", err);
-                fecharModal();
-            }
+                const response = await fetch("/user/delete/" + usuarioIdParaApagar, { method: 'DELETE' });
+                if(response.ok) location.reload();
+            } catch (err) { console.error(err); }
         });
     </script>
 </body>
