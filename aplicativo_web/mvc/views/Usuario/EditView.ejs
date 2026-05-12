@@ -14,6 +14,8 @@
             --bg-input: #303030;
             --primary: #686868;
             --accent: #004ba8;
+            --danger: #962020;
+            --success: #1b5e20;
             --text-main: #ffffff;
             --text-muted: #a1a0a0;
             --border-radius: 4px;
@@ -154,20 +156,78 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
+        /* --- Modal Design (Feedback) --- */
+        .lg-modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lg-modal-overlay.active { display: flex; opacity: 1; }
+
+        .lg-modal {
+            background: var(--bg-sidebar);
+            width: 100%;
+            max-width: 400px;
+            padding: 32px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .lg-modal-overlay.active .lg-modal { transform: translateY(0); }
+
+        .lg-modal-icon {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        /* Estilização Dinâmica por Classe */
+        .lg-modal.success .lg-modal-icon { background: rgba(27, 94, 32, 0.1); color: #4ade80; }
+        .lg-modal.error .lg-modal-icon { background: rgba(150, 32, 32, 0.1); color: var(--danger); }
+
+        .lg-modal-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+        .lg-modal-text { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; line-height: 1.5; }
+
         .lg-row { display: flex; gap: 20px; }
         .lg-col-6 { flex: 1; }
     </style>
 </head>
 
 <body>
+    <div class="lg-modal-overlay" id="modalFeedback">
+        <div class="lg-modal" id="modalContent">
+            <div class="lg-modal-icon">
+                <i id="modalIcon" data-lucide="check-circle" style="width: 32px; height: 32px;"></i>
+            </div>
+            <h2 class="lg-modal-title" id="modalTitle">Título</h2>
+            <p class="lg-modal-text" id="modalMessage">Mensagem do alerta.</p>
+            
+            <div class="lg-modal-actions">
+                <button class="lg-btn lg-btn-primary" id="btnFecharModal">Entendido</button>
+            </div>
+        </div>
+    </div>
+
     <nav class="lg-sidebar">
         <a href="/user/" class="lg-nav-item"><i data-lucide="layout-grid"></i></a>
-        <a href="/user/create" class="lg-nav-item active"><i data-lucide="user-plus"></i></a>
-        <a href="/user/list" class="lg-nav-item"><i data-lucide="calendar-search"></i></a>
+        <a href="/user/create" class="lg-nav-item"><i data-lucide="user-plus"></i></a>
+        <a href="/user/list" class="lg-nav-item active"><i data-lucide="calendar-search"></i></a>
         <div style="flex-grow: 1;"></div>
         <a href="/logout" class="lg-nav-item"><i data-lucide="log-out"></i></a>
     </nav>
-
 
     <main class="lg-main-container">
         <div class="lg-breadcrumb">
@@ -190,11 +250,11 @@
             <div class="lg-row">
                 <div class="lg-col-6 lg-form-group">
                     <label class="lg-label" for="username">Username</label>
-                    <input class="lg-input" value="<%= usuario.nome %>" type="text" id="username">
+                    <input class="lg-input" value="<%= usuario.nome %>" type="text" id="username" required>
                 </div>
                 <div class="lg-col-6 lg-form-group">
                     <label class="lg-label" for="email">E-mail</label>
-                    <input class="lg-input" value="<%= usuario.email %>" type="email" id="email">
+                    <input class="lg-input" value="<%= usuario.email %>" type="email" id="email" required>
                 </div>
             </div>
 
@@ -219,9 +279,36 @@
         lucide.createIcons();
 
         const form = document.getElementById("formEdicao");
+        const modalOverlay = document.getElementById("modalFeedback");
+        const modalContent = document.getElementById("modalContent");
+        const btnFechar = document.getElementById("btnFecharModal");
+
+        let redirectUrl = null;
+
+        function abrirModal(tipo, titulo, mensagem, redirect = null) {
+            modalContent.className = `lg-modal ${tipo}`;
+            document.getElementById("modalTitle").innerText = titulo;
+            document.getElementById("modalMessage").innerText = mensagem;
+            
+            const iconElement = document.getElementById("modalIcon");
+            iconElement.setAttribute('data-lucide', tipo === 'success' ? 'check-circle' : 'alert-circle');
+            
+            redirectUrl = redirect;
+            lucide.createIcons();
+            modalOverlay.classList.add('active');
+        }
+
+        btnFechar.addEventListener("click", () => {
+            modalOverlay.classList.remove('active');
+            if (redirectUrl) window.location.href = redirectUrl;
+        });
 
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
+            const btnSalvar = document.getElementById("btnSalvar");
+            
+            btnSalvar.disabled = true;
+            btnSalvar.innerText = "Salvando...";
 
             const payload = {
                 id: document.getElementById("usuarioId").value,
@@ -230,23 +317,24 @@
                 senha: document.getElementById("senha").value
             };
 
-            const url = "/user/edit";
-
             try {
-                const response = await fetch(url, {
+                const response = await fetch("/user/edit", {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
 
                 if (response.ok) {
-                    alert("Dados atualizados com sucesso!");
-                    window.location.href = "/user/list";
+                    abrirModal('success', 'Atualizado!', 'As informações do usuário foram salvas com sucesso.', '/user/list');
                 } else {
-                    console.error("Erro ao atualizar");
+                    abrirModal('error', 'Erro ao Salvar', 'Não foi possível atualizar os dados. Tente novamente mais tarde.');
+                    btnSalvar.disabled = false;
+                    btnSalvar.innerText = "Salvar Alterações";
                 }
             } catch (err) {
-                console.error("Erro de conexão");
+                abrirModal('error', 'Falha na Rede', 'Verifique sua conexão com a internet.');
+                btnSalvar.disabled = false;
+                btnSalvar.innerText = "Salvar Alterações";
             }
         });
     </script>

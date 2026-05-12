@@ -71,7 +71,7 @@ class UsuarioService
     {
         const usuario = new Usuario(email, senha, username)
         
-        const id = await this.#usuarioSchema.create(
+        const u = await this.#usuarioSchema.create(
             {
                 username: usuario.nome,
                 email: usuario.email,
@@ -79,7 +79,7 @@ class UsuarioService
             }
         )
 
-        return id;
+        return u;
 
     }
 
