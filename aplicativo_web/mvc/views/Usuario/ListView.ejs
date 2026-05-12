@@ -1,58 +1,254 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>List</title>
-</head>
-<body>
-    <h1>Lista de Usuários</h1>
+    <title>SGP - Lista de Usuários</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap');
 
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Senha</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% for(usuario of usuarios)  {%> 
-                <tr>
-                    <td><%= usuario.id %></td>
-                    <td><%= usuario.nome %></td>
-                    <td><%= usuario.email %></td>
-                    <td><%= usuario.senha %></td>
-                    <td>
-                        <a href="/user/edit/<%= usuario.id %>">Editar</a>
-                        <button onclick="apagarUsuario('<%= usuario.id %>')" id="btnApagar">Apagar</button>
-                    </td>
-                </tr>
-            <% } %> 
-        </tbody>
-    </table>
-
-
-</body>
-
-<script>
-    async function apagarUsuario(id)
-    {
-       const url = "/user/delete/"+id
-
-       const response = await fetch(url, {method:'DELETE'})
-
-        const data = await response.json()
-
-        if(!response.ok)
-        {
-            console.log("Ocorreu um erro na requisção")
+        :root {
+            --bg-body: #262626;
+            --bg-sidebar: #1f1f1f;
+            --bg-card: #303030;
+            --primary: #686868;
+            --accent: #004ba8;
+            --danger: #962020;
+            --text-main: #ffffff;
+            --text-muted: #a1a0a0;
+            --border-radius: 4px;
+            --font: "Nunito", sans-serif;
+            --sidebar-width: 60px;
         }
 
-        console.log(data)
-        location.reload()
-    }
-</script>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: var(--font);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- Sidebar Modular --- */
+        .lg-sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--bg-sidebar);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            flex-shrink: 0;
+        }
+
+        .lg-nav-item {
+            color: var(--text-muted);
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: var(--border-radius);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .lg-nav-item:hover, .lg-nav-item.active {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+        }
+
+        .lg-nav-item svg { width: 20px; height: 20px; }
+
+        /* --- Layout Container --- */
+        .lg-main-container {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* --- Breadcrumb --- */
+        .lg-breadcrumb {
+            display: flex; gap: 8px; font-size: 11px;
+            text-transform: uppercase; letter-spacing: 1px;
+            color: var(--text-muted); align-items: center;
+        }
+        .lg-breadcrumb span::after { content: '/'; margin-left: 8px; }
+        .lg-breadcrumb b { color: var(--text-main); }
+
+        /* --- Typography --- */
+        .lg-header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .lg-display-1 { font-size: 28px; font-weight: 700; }
+
+        /* --- Table Design --- */
+        .lg-table-container {
+            background-color: var(--bg-sidebar);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .lg-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .lg-table thead {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .lg-table th {
+            color: var(--primary);
+            text-transform: uppercase;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .lg-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--text-muted);
+        }
+
+        .lg-table tr:hover td {
+            background-color: rgba(255, 255, 255, 0.02);
+            color: var(--text-main);
+        }
+
+        /* --- Action Buttons --- */
+        .lg-actions { display: flex; gap: 8px; }
+
+        .lg-btn-icon {
+            background: var(--bg-card);
+            border: 1px solid var(--primary);
+            color: var(--text-muted);
+            padding: 6px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            text-decoration: none;
+        }
+
+        .lg-btn-icon:hover {
+            border-color: var(--text-main);
+            color: var(--text-main);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .lg-btn-icon.danger:hover {
+            background-color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .lg-btn-icon svg { width: 14px; height: 14px; }
+
+        /* Botão Novo Usuário */
+        .lg-btn-add {
+            text-decoration: none;
+            background: var(--accent);
+            color: white;
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+    </style>
+</head>
+
+<body>
+     <nav class="lg-sidebar">
+        <a href="/user/" class="lg-nav-item"><i data-lucide="layout-grid"></i></a>
+        <a href="/user/create" class="lg-nav-item active"><i data-lucide="user-plus"></i></a>
+        <a href="/user/list" class="lg-nav-item"><i data-lucide="calendar-search"></i></a>
+        <div style="flex-grow: 1;"></div>
+        <a href="/logout" class="lg-nav-item"><i data-lucide="log-out"></i></a>
+    </nav>
+
+
+    <main class="lg-main-container">
+        <div class="lg-breadcrumb">
+            <span>Dashboard</span>
+            <b>Usuários Cadastrados</b>
+        </div>
+
+        <div class="lg-header-flex">
+            <div>
+                <h1 class="lg-display-1">Gerenciamento de Usuários</h1>
+            </div>
+            <a href="/user/create" class="lg-btn-add">
+                <i data-lucide="plus" style="width: 14px;"></i> Novo Usuário
+            </a>
+        </div>
+
+        <div class="lg-table-container">
+            <table class="lg-table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(usuario of usuarios) { %> 
+                        <tr>
+                            <td>#<%= usuario.id %></td>
+                            <td style="color: var(--text-main); font-weight: 600;">
+                                <%= usuario.nome %>
+                            </td>
+                            <td><%= usuario.email %></td>
+                            <td>
+                                <div class="lg-actions">
+                                    <a href="/user/edit/<%= usuario.id %>" class="lg-btn-icon" title="Editar">
+                                        <i data-lucide="pencil"></i>
+                                    </a>
+                                    <button onclick="apagarUsuario('<%= usuario.id %>')" class="lg-btn-icon danger" title="Excluir">
+                                        <i data-lucide="trash-2"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    <% } %> 
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        async function apagarUsuario(id) {
+            if(!confirm("Tem certeza que deseja excluir este usuário?")) return;
+
+            const url = "/user/delete/" + id;
+            try {
+                const response = await fetch(url, { method: 'DELETE' });
+                if(response.ok) {
+                    location.reload();
+                } else {
+                    alert("Erro ao excluir usuário.");
+                }
+            } catch (err) {
+                console.error("Erro na requisição:", err);
+            }
+        }
+    </script>
+</body>
 </html>

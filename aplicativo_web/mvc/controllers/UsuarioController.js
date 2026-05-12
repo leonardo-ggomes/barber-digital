@@ -9,8 +9,7 @@ class UsuarioController
 
     async index(req, res)
     {
-        const usuarios = await this.usuarioService.buscarUsuario(req.params.id)
-        res.render("Usuario/UsuarioView", { usuarios})
+        res.render("Usuario/UsuarioView")
     }
 
     async usuarioListView(req, res)
