@@ -43,6 +43,11 @@
             flex-shrink: 0;
         }
 
+        .lg-nav-item svg { 
+            width: 20px; 
+            height: 20px; 
+        }
+
         .lg-nav-item {
             color: var(--text-muted);
             padding: 12px;
@@ -75,7 +80,10 @@
             align-items: center;
         }
         .lg-breadcrumb b { color: var(--text-main); }
-
+        .lg-breadcrumb span::after { 
+            content: '/'; 
+            margin-left: 8px; 
+        }
         /* --- Área de Saudação --- */
         .lg-greeting-box {
             display: flex;
