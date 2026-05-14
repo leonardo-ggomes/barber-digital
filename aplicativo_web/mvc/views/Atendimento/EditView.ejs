@@ -110,7 +110,7 @@
 
     <main class="lg-main-container">
         <div class="lg-breadcrumb">
-            <span>Gestão</span>
+            <span>Plataforma</span>
             <span>Atendimentos</span>
             <b>Editar Registro</b>
         </div>
@@ -159,7 +159,15 @@
             <div class="lg-row">
                 <div class="lg-col-6 lg-form-group">
                     <label class="lg-label" for="profissional">Profissional Responsável</label>
-                    <input class="lg-input" value="<%= atendimento.profissional %>" type="text" id="profissional" required>
+                   
+                   <select class="lg-input" name="profissional" id="profissional">
+                        <% for(const usuario of usuarios) { %>
+                            <option value="<%= usuario.id %>" 
+                                <%= String(atendimento.profissional) === String(usuario.id) ? "selected" : "" %>>
+                                <%= usuario.nome %>
+                            </option>
+                        <% } %>
+                    </select>
                 </div>
                 <div class="lg-col-6"></div>
             </div>

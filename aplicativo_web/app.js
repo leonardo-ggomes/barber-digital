@@ -9,6 +9,16 @@ async function run() {
 
     try {
 
+        Usuario.hasMany(Atendimento, {
+            foreignKey:"usuarioId",
+            as:"atendimentos"
+        })
+
+        Atendimento.belongsTo(Usuario, {
+            foreignKey:"usuarioId",
+            as:"users"
+        })
+
         await sequelize.authenticate();
         console.log('✅ Conexão com o banco realizada com sucesso.');
        

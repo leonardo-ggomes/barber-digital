@@ -1,5 +1,6 @@
 const Atendimento = require("../mvc/models/AtendimentoModel");
 const AtendimentoSchema = require("../schemas/AtendimentoSchema");
+const UsuarioSchema = require("../schemas/UsuarioSchema")
 
 class AtendimentoService 
 {
@@ -14,7 +15,8 @@ class AtendimentoService
     async buscarAtendimento(id) 
     {   
        const dado = await this.#atendimentoSchema.findOne({
-            where: { id: id }
+            where: { id: id },
+            include: "users"
         });
 
         if(!dado){
@@ -25,10 +27,10 @@ class AtendimentoService
         dado.nomeCliente,
         dado.telefone,
         dado.horarioAtendimento,
-        dados.dataAtendimento,
+        dado.dataAtendimento,
         dado.dataNascimento,
         dado.tipoServico,
-        dado.profissional
+        dado.users.id
        )
 
        atendimento.id = dado.id
@@ -51,11 +53,13 @@ class AtendimentoService
     async buscarTodosAtendimentos() 
     {   
         const atendimentos = []
-        const dados = await this.#atendimentoSchema.findAll();
+        const dados = await this.#atendimentoSchema.findAll({
+            include:"users"
+        });
+   
 
         for(const atendimento of dados)
-        {
-
+        {            
             const a = new Atendimento(
                     atendimento.nomeCliente,
                     atendimento.telefone,
@@ -63,7 +67,7 @@ class AtendimentoService
                     atendimento.dataAtendimento,
                     atendimento.dataNascimento,
                     atendimento.tipoServico,
-                    atendimento.profissional
+                    atendimento.users.username
                 )
             
             a.id = atendimento.id
@@ -103,7 +107,8 @@ class AtendimentoService
                 dataAtendimento: atendimento.dataAtendimento,
                 dataNascimento: atendimento.dataNascimento,
                 tipoServico: atendimento.tipoServico,
-                profissional: atendimento.profissional
+                profissional: atendimento.profissional,
+                usuarioId: atendimento.profissional
             }
         )
 
@@ -137,7 +142,7 @@ class AtendimentoService
                 dataAtendimento || atendimento.dataAtendimento,
                 dataNascimento || atendimento.dataNascimento,
                 tipoServico || atendimento.tipoServico,
-                profissional ||  atendimento.profissional        
+                profissional ||  atendimento.profissional     
             )
 
              const affectedRows = await this.#atendimentoSchema.update(
@@ -148,7 +153,8 @@ class AtendimentoService
                     dataAtendimento: model.dataAtendimento,
                     dataNascimento: model.dataNascimento,
                     tipoServico: model.tipoServico,
-                    profissional: model.profissional
+                    profissional: model.profissional,
+                    usuarioId: model.profissional
                 },
                 {
                     where: {

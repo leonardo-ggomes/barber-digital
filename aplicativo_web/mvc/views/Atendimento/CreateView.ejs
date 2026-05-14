@@ -259,7 +259,7 @@
 
     <main class="lg-main-container">
         <div class="lg-breadcrumb">
-            <span>Dashboard</span>
+            <span>Plataforma</span>
             <span>Atendimentos</span>
             <b>Novo Registro</b>
         </div>
@@ -312,7 +312,12 @@
                 </div>
                 <div class="lg-col-6 lg-form-group">
                     <label class="lg-label" for="profissional">Profissional Responsável</label>
-                    <input class="lg-input" type="text" id="profissional" placeholder="Nome do especialista" required>
+
+                    <select class="lg-input" name="profissional" id="profissional">
+                        <% for(const usuario of usuarios){  %>
+                            <option value="<%= usuario.id %> "><%= usuario.nome %></option>
+                        <% } %>
+                    </select>
                 </div>
             </div>
 

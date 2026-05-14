@@ -1,10 +1,12 @@
 const AtendimentoService = require("../../services/AtendimentoService");
+const UsuarioService = require("../../services/UsuarioService");
 class AtendimentoController
 {
 
     constructor()
     {
         this.atendimentoService = new AtendimentoService()
+        this.usuarioService = new UsuarioService()
     }
 
     async atendimentoListView(req, res)
@@ -13,15 +15,17 @@ class AtendimentoController
         res.render("Atendimento/ListView", { atendimentos: atendimentos })
     }
 
-    atendimentoCreateView(req, res)
+    async atendimentoCreateView(req, res)
     {
-         res.render("Atendimento/CreateView")
+        const usuarios = await this.usuarioService.buscarTodosUsuarios()
+        res.render("Atendimento/CreateView", {usuarios: usuarios})
     }
 
     async atendimentoEditView(req, res)
     {
         const atendimento = await this.atendimentoService.buscarAtendimento(req.params.id)
-        res.render("Atendimento/EditView", { atendimento: atendimento })
+        const usuarios = await this.usuarioService.buscarTodosUsuarios()
+        res.render("Atendimento/EditView", { atendimento: atendimento, usuarios: usuarios })
     }
 
     async atendimentoPostAsync(req,res)
