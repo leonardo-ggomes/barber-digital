@@ -1,4 +1,6 @@
 const sequelize = require("./database/dbconfig");
+const Usuario = require("./schemas/UsuarioSchema");
+const Atendimento = require("./schemas/AtendimentoSchema")
 const server = require("./server");
 
 async function run() {
@@ -6,7 +8,7 @@ async function run() {
     const port = 8080;
 
     try {
-     
+
         await sequelize.authenticate();
         console.log('✅ Conexão com o banco realizada com sucesso.');
        
